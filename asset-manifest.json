@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/HMIS_System/static/css/main.27027cee.css",
+    "main.js": "/HMIS_System/static/js/main.91797135.js",
+    "static/js/453.8ab44547.chunk.js": "/HMIS_System/static/js/453.8ab44547.chunk.js",
+    "index.html": "/HMIS_System/index.html",
+    "main.27027cee.css.map": "/HMIS_System/static/css/main.27027cee.css.map",
+    "main.91797135.js.map": "/HMIS_System/static/js/main.91797135.js.map",
+    "453.8ab44547.chunk.js.map": "/HMIS_System/static/js/453.8ab44547.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.27027cee.css",
+    "static/js/main.91797135.js"
+  ]
+}

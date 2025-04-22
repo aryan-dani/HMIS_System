@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/main.27027cee.css","mappings":"AAEA,KACC,iBACD,CAEA,SAEC,6BAA8B,CAD9B,YAED,CAEA,GACC,aACD","sources":["App.css"],"sourcesContent":["/** @format */\n\n.App {\n\ttext-align: center;\n}\n\n.content {\n\tpadding: 20px;\n\tmin-height: calc(100vh - 70px);\n}\n\nh1 {\n\tcolor: #2c3e50;\n}\n"],"names":[],"sourceRoot":""}
