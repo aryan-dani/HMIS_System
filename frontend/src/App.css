@@ -1,0 +1,14 @@
+/** @format */
+
+.App {
+	text-align: center;
+}
+
+.content {
+	padding: 20px;
+	min-height: calc(100vh - 70px);
+}
+
+h1 {
+	color: #2c3e50;
+}
