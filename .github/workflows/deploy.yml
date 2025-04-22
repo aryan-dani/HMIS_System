@@ -3,11 +3,14 @@ name: Deploy Frontend to GitHub Pages
 on:
   push:
     branches:
-      - main  # Your default branch
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
 
     steps:
       - name: Checkout repository
@@ -19,15 +22,16 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        working-directory: ./frontend
         run: npm install
 
       - name: Build application
-        working-directory: ./frontend
         run: npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          personal_token: ${{ secrets.GH_PAT }}
           publish_dir: ./frontend/build
+          publish_branch: gh-pages
+          user_name: aryan-dani
+          user_email: aryan-dani@users.noreply.github.com
