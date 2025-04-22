@@ -1,7 +1,12 @@
 /** @format */
 
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import {
+	BrowserRouter as Router,
+	Route,
+	Routes,
+	Navigate,
+} from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 
 // Import Layout
@@ -29,7 +34,13 @@ function App() {
 
 	if (loading) {
 		return (
-			<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+			<Box
+				sx={{
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+					height: "100vh",
+				}}>
 				<CircularProgress />
 			</Box>
 		);
@@ -47,10 +58,11 @@ function App() {
 				{/* Protected Routes: Rendered inside the main Layout */}
 				<Route
 					path="/"
-					element={session ? <Layout /> : <Navigate to="/login" replace />}
-				>
+					element={session ? <Layout /> : <Navigate to="/login" replace />}>
 					{/* Child routes of Layout (rendered via Outlet) */}
-					<Route index element={<DashboardPage />} /> {/* Default route for / */}
+					{/* Restore DashboardPage for index route */}
+					{/* <Route index element={<PatientsPage />} /> */}
+					<Route index element={<DashboardPage />} />
 					<Route path="patients" element={<PatientsPage />} />
 					<Route path="doctors" element={<DoctorsPage />} />
 					<Route path="rooms" element={<RoomsPage />} />
