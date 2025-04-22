@@ -1,7 +1,6 @@
 /** @format */
 
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
 	Container,
 	Box,
@@ -9,9 +8,12 @@ import {
 	TextField,
 	Button,
 	Alert,
-	CircularProgress, // Import CircularProgress for loading indicator
+	CircularProgress,
+	Avatar,
+	Paper,
 } from "@mui/material";
-import { supabase } from "../supabaseClient"; // Import the supabase client
+import { supabase } from "../supabaseClient";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined"; // Import Lock icon
 
 function LoginPage() {
 	const [formData, setFormData] = useState({
@@ -19,8 +21,7 @@ function LoginPage() {
 		password: "",
 	});
 	const [error, setError] = useState("");
-	const [loading, setLoading] = useState(false); // Add loading state
-	const navigate = useNavigate();
+	const [loading, setLoading] = useState(false);
 
 	const { email, password } = formData;
 
@@ -29,43 +30,61 @@ function LoginPage() {
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		setError(""); // Clear previous errors
-		setLoading(true); // Set loading to true
+		setError("");
+		setLoading(true);
 		try {
-			// Use Supabase auth
 			const { error: signInError } = await supabase.auth.signInWithPassword({
 				email: email,
 				password: password,
 			});
-
 			if (signInError) {
-				throw signInError; // Throw error to be caught below
+				throw signInError;
 			}
-
 			console.log("Login successful");
-			// Redirect to dashboard or appropriate page after login
-			navigate("/");
+			// Navigate is handled by AuthContext listener now, but can keep for immediate feedback if needed
+			// navigate("/");
 		} catch (err) {
 			console.error("Login error:", err.message);
-			setError(err.message || "Login failed. Please try again.");
+			setError(err.message || "Login failed. Please check your credentials.");
 		} finally {
-			setLoading(false); // Set loading to false regardless of outcome
+			setLoading(false);
 		}
 	};
 
 	return (
-		<Container component="main" maxWidth="xs">
-			<Box
+		// Center the container vertically and horizontally
+		<Container
+			component="main"
+			maxWidth="xs"
+			sx={{
+				display: "flex",
+				flexDirection: "column",
+				alignItems: "center",
+				justifyContent: "center",
+				minHeight: "calc(100vh - 64px - 48px)",
+			}}>
+			{" "}
+			{/* Adjust height based on Navbar and padding */}
+			<Paper
+				elevation={3}
 				sx={{
-					marginTop: 8,
+					padding: 4,
 					display: "flex",
 					flexDirection: "column",
 					alignItems: "center",
+					width: "100%",
 				}}>
+				<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+					<LockOutlinedIcon />
+				</Avatar>
 				<Typography component="h1" variant="h5">
 					Sign in
 				</Typography>
-				<Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 1 }}>
+				<Box
+					component="form"
+					onSubmit={onSubmit}
+					noValidate
+					sx={{ mt: 1, width: "100%" }}>
 					{error && (
 						<Alert severity="error" sx={{ width: "100%", mb: 2 }}>
 							{error}
@@ -95,20 +114,30 @@ function LoginPage() {
 						value={password}
 						onChange={onChange}
 					/>
-					{/* Add Remember me checkbox if needed */}
+					{/* Add Checkbox for 'Remember me' if needed */}
 					<Button
 						type="submit"
 						fullWidth
 						variant="contained"
 						sx={{ mt: 3, mb: 2 }}
-						disabled={loading} // Disable button when loading
-					>
-						{loading ? <CircularProgress size={24} /> : "Sign In"}{" "}
-						{/* Show loader or text */}
+						disabled={loading}>
+						{loading ? <CircularProgress size={24} /> : "Sign In"}
 					</Button>
-					{/* Add Forgot password/Sign up links if needed */}
+					{/* Add Grid container for Forgot password/Sign up links if needed */}
+					{/* <Grid container>
+						<Grid item xs>
+							<Link href="#" variant="body2">
+								Forgot password?
+							</Link>
+						</Grid>
+						<Grid item>
+							<Link href="#" variant="body2">
+								{"Don't have an account? Sign Up"}
+							</Link>
+						</Grid>
+					</Grid> */}
 				</Box>
-			</Box>
+			</Paper>
 		</Container>
 	);
 }

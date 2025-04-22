@@ -1,13 +1,11 @@
 /** @format */
 
 import React from "react";
-import {
-	BrowserRouter as Router,
-	Route,
-	Routes,
-	Navigate,
-} from "react-router-dom";
-import { useAuth } from "./context/AuthContext"; // Import useAuth
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
+
+// Import Layout
+import Layout from "./components/Layout"; // Import the new Layout component
 
 // Import pages
 import DashboardPage from "./pages/DashboardPage";
@@ -20,26 +18,18 @@ import PathologyPage from "./pages/PathologyPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 
 // Import components
-import Navbar from "./components/Navbar";
-import { Box, CircularProgress } from "@mui/material"; // Import Box and CircularProgress
+import { Box, CircularProgress } from "@mui/material";
 
 // Determine the base path based on the environment
 const basename =
 	process.env.NODE_ENV === "development" ? "/" : process.env.PUBLIC_URL || "/";
 
 function App() {
-	const { session, loading } = useAuth(); // Get session and loading state
+	const { session, loading } = useAuth();
 
-	// Show loading indicator while checking auth state
 	if (loading) {
 		return (
-			<Box
-				sx={{
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center",
-					height: "100vh",
-				}}>
+			<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
 				<CircularProgress />
 			</Box>
 		);
@@ -47,74 +37,36 @@ function App() {
 
 	return (
 		<Router basename={basename}>
-			<div className="App">
-				{/* Only show Navbar if logged in */}
-				{session && <Navbar />}
-				<Box component="main" sx={{ p: 3 }}>
-					<Routes>
-						{/* Public Route: Login */}
-						<Route
-							path="/login"
-							element={!session ? <LoginPage /> : <Navigate to="/" replace />}
-						/>
+			<Routes>
+				{/* Public Route: Login - Rendered outside the main Layout */}
+				<Route
+					path="/login"
+					element={!session ? <LoginPage /> : <Navigate to="/" replace />}
+				/>
 
-						{/* Protected Routes */}
-						<Route
-							path="/"
-							element={
-								session ? <DashboardPage /> : <Navigate to="/login" replace />
-							}
-						/>
-						<Route
-							path="/patients"
-							element={
-								session ? <PatientsPage /> : <Navigate to="/login" replace />
-							}
-						/>
-						<Route
-							path="/doctors"
-							element={
-								session ? <DoctorsPage /> : <Navigate to="/login" replace />
-							}
-						/>
-						<Route
-							path="/rooms"
-							element={
-								session ? <RoomsPage /> : <Navigate to="/login" replace />
-							}
-						/>
-						<Route
-							path="/billing"
-							element={
-								session ? <BillingPage /> : <Navigate to="/login" replace />
-							}
-						/>
-						<Route
-							path="/pathology"
-							element={
-								session ? <PathologyPage /> : <Navigate to="/login" replace />
-							}
-						/>
-						<Route
-							path="/admin"
-							element={
-								session ? (
-									<AdminDashboardPage />
-								) : (
-									<Navigate to="/login" replace />
-								)
-							}
-						/>
+				{/* Protected Routes: Rendered inside the main Layout */}
+				<Route
+					path="/"
+					element={session ? <Layout /> : <Navigate to="/login" replace />}
+				>
+					{/* Child routes of Layout (rendered via Outlet) */}
+					<Route index element={<DashboardPage />} /> {/* Default route for / */}
+					<Route path="patients" element={<PatientsPage />} />
+					<Route path="doctors" element={<DoctorsPage />} />
+					<Route path="rooms" element={<RoomsPage />} />
+					<Route path="billing" element={<BillingPage />} />
+					<Route path="pathology" element={<PathologyPage />} />
+					<Route path="admin" element={<AdminDashboardPage />} />
+				</Route>
 
-						{/* Catch-all for unknown routes - redirect based on auth state */}
-						<Route
-							path="*"
-							element={<Navigate to={session ? "/" : "/login"} replace />}
-						/>
-					</Routes>
-				</Box>
-			</div>
+				{/* Catch-all for unknown routes - redirect based on auth state */}
+				<Route
+					path="*"
+					element={<Navigate to={session ? "/" : "/login"} replace />}
+				/>
+			</Routes>
 		</Router>
 	);
 }
+
 export default App;

@@ -7,9 +7,21 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-// import "./Navbar.css"; // Remove old CSS import
+import { useAuth } from "../context/AuthContext"; // Import useAuth
 
 function Navbar() {
+	const { signOut } = useAuth(); // Get signOut function from context
+
+	const handleLogout = async () => {
+		const { error } = await signOut();
+		if (error) {
+			console.error("Error logging out:", error.message);
+			// Optionally show an error message to the user
+		} else {
+			// AuthContext listener will handle redirect via App.js
+		}
+	};
+
 	return (
 		<AppBar position="static">
 			<Toolbar>
@@ -42,8 +54,9 @@ function Navbar() {
 					<Button color="inherit" component={RouterLink} to="/admin">
 						Admin
 					</Button>
-					<Button color="inherit" component={RouterLink} to="/login">
-						Login
+					{/* Replace Login button with Logout button */}
+					<Button color="inherit" onClick={handleLogout}>
+						Logout
 					</Button>
 				</Box>
 			</Toolbar>
