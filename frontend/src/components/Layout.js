@@ -11,6 +11,7 @@ import {
 	Divider,
 	ListItem,
 	ListItemButton,
+	ListItemIcon, // Add ListItemIcon back to imports
 	ListItemText,
 	CssBaseline,
 } from "@mui/material";
@@ -18,16 +19,26 @@ import { Link as RouterLink, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext"; // Import useAuth
 import Button from "@mui/material/Button";
 
+// Import Icons
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import PeopleIcon from "@mui/icons-material/People";
+import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import BiotechIcon from "@mui/icons-material/Biotech";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import LogoutIcon from "@mui/icons-material/Logout";
+
 const drawerWidth = 240;
 
 const navItems = [
-	{ text: "Dashboard", /* icon: <DashboardIcon />, */ path: "/" },
-	{ text: "Patients", /* icon: <PeopleIcon />, */ path: "/patients" },
-	{ text: "Doctors", /* icon: <MedicalServicesIcon />, */ path: "/doctors" },
-	{ text: "Rooms", /* icon: <MeetingRoomIcon />, */ path: "/rooms" },
-	{ text: "Billing", /* icon: <ReceiptIcon />, */ path: "/billing" },
-	{ text: "Pathology", /* icon: <BiotechIcon />, */ path: "/pathology" },
-	{ text: "Admin", /* icon: <AdminPanelSettingsIcon />, */ path: "/admin" },
+	{ text: "Dashboard", icon: <DashboardIcon />, path: "/" },
+	{ text: "Patients", icon: <PeopleIcon />, path: "/patients" },
+	{ text: "Doctors", icon: <MedicalServicesIcon />, path: "/doctors" },
+	{ text: "Rooms", icon: <MeetingRoomIcon />, path: "/rooms" },
+	{ text: "Billing", icon: <ReceiptIcon />, path: "/billing" },
+	{ text: "Pathology", icon: <BiotechIcon />, path: "/pathology" },
+	{ text: "Admin", icon: <AdminPanelSettingsIcon />, path: "/admin" },
 ];
 
 function Layout() {
@@ -58,9 +69,7 @@ function Layout() {
 							to={item.path}
 							selected={location.pathname === item.path} // Highlight selected item
 						>
-							{/* <ListItemIcon>
-                {item.icon}
-              </ListItemIcon> */}
+							<ListItemIcon>{item.icon}</ListItemIcon>
 							<ListItemText primary={item.text} />
 						</ListItemButton>
 					</ListItem>
@@ -81,8 +90,11 @@ function Layout() {
 						{navItems.find((item) => item.path === location.pathname)?.text ||
 							"Hospital Management"}
 					</Typography>
-					{/* <Button color="inherit" onClick={handleLogout} startIcon={<LogoutIcon />}> */}
-					<Button color="inherit" onClick={handleLogout}>
+					<Button
+						color="inherit"
+						onClick={handleLogout}
+						startIcon={<LogoutIcon />}>
+						{/* <Button color="inherit" onClick={handleLogout}> */}
 						Logout
 					</Button>
 				</Toolbar>
