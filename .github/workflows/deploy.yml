@@ -1,3 +1,5 @@
+# @format
+
 name: Deploy Frontend to GitHub Pages
 
 on:
@@ -19,19 +21,20 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Install dependencies
         run: npm install
 
       - name: Build application
         run: npm run build
+        env: # Inject secrets and PUBLIC_URL as environment variables for the build
+          REACT_APP_SUPABASE_URL: ${{ secrets.REACT_APP_SUPABASE_URL }}
+          REACT_APP_SUPABASE_ANON_KEY: ${{ secrets.REACT_APP_SUPABASE_ANON_KEY }}
+          PUBLIC_URL: /${{ github.event.repository.name }}
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          personal_token: ${{ secrets.GH_PAT }}
+          github_token: ${{ secrets.GITHUB_TOKEN }} # Use the default GITHUB_TOKEN
           publish_dir: ./frontend/build
-          publish_branch: gh-pages
-          user_name: aryan-dani
-          user_email: aryan-dani@users.noreply.github.com
