@@ -9,8 +9,9 @@ import {
 	TextField,
 	Button,
 	Alert,
+	CircularProgress, // Import CircularProgress for loading indicator
 } from "@mui/material";
-// import api from "../utils/api"; // Assuming you have an api utility for backend calls
+import { supabase } from "../supabaseClient"; // Import the supabase client
 
 function LoginPage() {
 	const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ function LoginPage() {
 		password: "",
 	});
 	const [error, setError] = useState("");
+	const [loading, setLoading] = useState(false); // Add loading state
 	const navigate = useNavigate();
 
 	const { email, password } = formData;
@@ -28,26 +30,26 @@ function LoginPage() {
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		setError(""); // Clear previous errors
+		setLoading(true); // Set loading to true
 		try {
-			// Replace with your actual API call
-			// const res = await api.post('/auth/login', formData);
-			// localStorage.setItem('token', res.data.token); // Store token or handle session
-			console.log("Login attempt with:", formData); // Placeholder
-			// Simulate successful login for now
-			if (email === "admin@example.com" && password === "password") {
-				// Replace with actual logic
-				console.log("Login successful (simulated)");
-				// Redirect to dashboard or appropriate page after login
-				navigate("/");
-			} else {
-				setError("Invalid Credentials (simulated)");
+			// Use Supabase auth
+			const { error: signInError } = await supabase.auth.signInWithPassword({
+				email: email,
+				password: password,
+			});
+
+			if (signInError) {
+				throw signInError; // Throw error to be caught below
 			}
+
+			console.log("Login successful");
+			// Redirect to dashboard or appropriate page after login
+			navigate("/");
 		} catch (err) {
-			console.error(
-				"Login error:",
-				err.response ? err.response.data : err.message
-			);
-			setError(err.response?.data?.msg || "Login failed. Please try again.");
+			console.error("Login error:", err.message);
+			setError(err.message || "Login failed. Please try again.");
+		} finally {
+			setLoading(false); // Set loading to false regardless of outcome
 		}
 	};
 
@@ -98,8 +100,11 @@ function LoginPage() {
 						type="submit"
 						fullWidth
 						variant="contained"
-						sx={{ mt: 3, mb: 2 }}>
-						Sign In
+						sx={{ mt: 3, mb: 2 }}
+						disabled={loading} // Disable button when loading
+					>
+						{loading ? <CircularProgress size={24} /> : "Sign In"}{" "}
+						{/* Show loader or text */}
 					</Button>
 					{/* Add Forgot password/Sign up links if needed */}
 				</Box>
