@@ -2,7 +2,12 @@
 	"name": "frontend",
 	"version": "0.1.0",
 	"private": true,
+	"homepage": "https://aryan-dani.github.io/HMIS_System",
 	"dependencies": {
+		"@emotion/react": "^11.14.0",
+		"@emotion/styled": "^11.14.0",
+		"@mui/material": "^7.0.2",
+		"@supabase/supabase-js": "^2.49.4",
 		"@testing-library/dom": "^10.4.0",
 		"@testing-library/jest-dom": "^6.6.3",
 		"@testing-library/react": "^16.3.0",
@@ -15,10 +20,12 @@
 		"web-vitals": "^2.1.4"
 	},
 	"scripts": {
-		"start": "react-scripts start",
+		"start": "cross-env PUBLIC_URL=/ react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
-		"eject": "react-scripts eject"
+		"eject": "react-scripts eject",
+		"predeploy": "npm run build",
+		"deploy": "gh-pages -d build"
 	},
 	"eslintConfig": {
 		"extends": [
@@ -37,5 +44,8 @@
 			"last 1 firefox version",
 			"last 1 safari version"
 		]
+	},
+	"devDependencies": {
+		"cross-env": "^7.0.3"
 	}
 }

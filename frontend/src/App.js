@@ -1,6 +1,7 @@
 /** @format */
 
 import React from "react";
+// Import BrowserRouter and rename it to Router
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 
@@ -17,13 +18,20 @@ import AdminDashboardPage from "./pages/AdminDashboardPage";
 // Import components
 import Navbar from "./components/Navbar";
 
+// Determine the base path based on the environment
+// Use '/' in development, and PUBLIC_URL (from homepage) in production
+const basename =
+	process.env.NODE_ENV === "development" ? "/" : process.env.PUBLIC_URL || "/";
+
 function App() {
 	return (
-		<Router>
+		// Pass the determined basename to the Router
+		<Router basename={basename}>
 			<div className="App">
 				<Navbar />
 				<main className="content">
 					<Routes>
+						{/* Routes remain the same */}
 						<Route path="/" element={<DashboardPage />} />
 						<Route path="/login" element={<LoginPage />} />
 						<Route path="/patients" element={<PatientsPage />} />
