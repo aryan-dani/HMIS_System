@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState, useEffect, useCallback } from "react"; // Added useCallback
+import React, { useState, useEffect, useCallback, useMemo } from "react"; // Added useCallback
 import { supabase } from "../supabaseClient"; // Import supabase client
 import {
 	Box,
@@ -109,12 +109,13 @@ function PatientsPage() {
 		}
 	}, []); // Empty dependency array is fine here as it doesn't depend on props or state
 
-	// Debounced fetch function
-	const debouncedFetchPatients = useCallback(
-		debounce((query) => {
-			fetchPatients(query);
-		}, 500), // 500ms delay
-		[] // Empty dependency array is correct here as debounce and fetchPatients are stable
+	// Debounced fetch function - Corrected usage with useMemo
+	const debouncedFetchPatients = useMemo(
+		() =>
+			debounce((query) => {
+				fetchPatients(query);
+			}, 500), // 500ms delay
+		[fetchPatients] // Dependency: Recreate debounce if fetchPatients changes
 	);
 
 	useEffect(() => {

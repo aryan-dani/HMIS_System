@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "../supabaseClient";
 import {
 	Box,
@@ -119,12 +119,15 @@ function DoctorsPage() {
 		}
 	}, []);
 
-	// Debounced Fetch
-	const debouncedFetchDoctors = useCallback(
-		debounce((query) => {
-			fetchDoctors(query);
-		}, 500),
-		[fetchDoctors]
+	// Debounced Fetch - Corrected usage
+	// We memoize the debounced function itself, ensuring it has a stable reference
+	// as long as fetchDoctors doesn't change.
+	const debouncedFetchDoctors = useMemo(
+		() =>
+			debounce((query) => {
+				fetchDoctors(query);
+			}, 500),
+		[fetchDoctors] // Dependency: Recreate debounce if fetchDoctors changes
 	);
 
 	// Initial Fetch and Search Trigger

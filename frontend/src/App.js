@@ -2,7 +2,7 @@
 
 import React from "react";
 import {
-	BrowserRouter as Router,
+	HashRouter as Router, // Changed from BrowserRouter to HashRouter
 	Route,
 	Routes,
 	Navigate,
@@ -25,10 +25,6 @@ import AdminDashboardPage from "./pages/AdminDashboardPage";
 // Import components
 import { Box, CircularProgress } from "@mui/material";
 
-// Determine the base path based on the environment
-const basename =
-	process.env.NODE_ENV === "development" ? "/" : process.env.PUBLIC_URL || "/";
-
 function App() {
 	const { session, loading } = useAuth();
 
@@ -47,7 +43,9 @@ function App() {
 	}
 
 	return (
-		<Router basename={basename}>
+		<Router>
+			{" "}
+			{/* Removed basename={basename} */}
 			<Routes>
 				{/* Public Route: Login - Rendered outside the main Layout */}
 				<Route
