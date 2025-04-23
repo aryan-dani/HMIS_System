@@ -1,70 +1,89 @@
-# Getting Started with Create React App
+<!-- @format -->
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# HMIS System - Hospital Management Information System
+
+A web application for managing hospital operations, including patients, doctors, rooms, billing, and pathology records. Built with React, Material UI, and Supabase.
+
+## Features
+
+- **Authentication:** Secure login powered by Supabase Auth.
+- **Dashboard:** Overview of key hospital metrics (Placeholder).
+- **Patient Management:** Add, view, edit, and delete patient records.
+- **Doctor Management:** Manage doctor information (Placeholder/Basic).
+- **Room Management:** Track room availability, types, and status. Add, view, edit, and delete rooms.
+- **Billing Management:** Handle billing information (Placeholder/Basic).
+- **Pathology Management:** Manage pathology reports (Placeholder/Basic).
+- **Admin Dashboard:** Separate section for administrative tasks (Placeholder).
+- **Responsive Design:** User interface built with Material UI for usability across devices.
+
+## Tech Stack
+
+- **Frontend:**
+  - React (via Create React App)
+  - React Router v6
+  - Material UI (MUI) v5+
+  - Axios (for potential future API calls)
+- **Backend & Database:**
+  - Supabase (Authentication, Database)
+- **Deployment:**
+  - GitHub Pages
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js and npm (or yarn) installed.
+- A Supabase account and project.
+
+### Installation & Setup
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone <your-repository-url>
+    cd HMIS_System/frontend
+    ```
+
+2.  **Install dependencies:**
+
+    ```bash
+    npm install
+    ```
+
+3.  **Set up Supabase:**
+
+    - Create a Supabase project at [supabase.com](https://supabase.com/).
+    - In your Supabase project dashboard, go to `Project Settings` > `API`.
+    - Find your Project **URL** and `anon` **public** key.
+    - Create a file named `.env` in the `frontend` directory (`HMIS_System/frontend/.env`).
+    - Add your Supabase credentials to the `.env` file:
+      ```env
+      REACT_APP_SUPABASE_URL=YOUR_SUPABASE_URL
+      REACT_APP_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+      ```
+    - **Important:** You will also need to set up the necessary database tables (e.g., `patients`, `doctors`, `rooms`, etc.) in your Supabase project according to the application's needs.
+
+4.  **Run the application:**
+    ```bash
+    npm start
+    ```
+    This runs the app in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ## Available Scripts
 
-In the project directory, you can run:
+Inside the `frontend` directory, you can run several commands:
 
-### `npm start`
+- `npm start`: Runs the app in development mode.
+- `npm test`: Launches the test runner (if tests are configured).
+- `npm run build`: Builds the app for production to the `build` folder.
+- `npm run deploy`: Builds the app and deploys it to GitHub Pages (requires `gh-pages` setup and configuration in `package.json`).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Deployment
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+This project is configured for deployment to GitHub Pages. Run the following command from the `frontend` directory:
 
-### `npm test`
+```bash
+npm run deploy
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This will build the application and push the contents of the `build` folder to the `gh-pages` branch of your repository. Ensure your repository settings are configured to serve from this branch.

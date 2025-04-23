@@ -417,14 +417,18 @@ function RoomsPage() {
 			</TableContainer>
 
 			{/* Add Room Dialog */}
-			<Dialog open={openAddDialog} onClose={handleAddClose}>
+			<Dialog
+				open={openAddDialog}
+				onClose={handleAddClose}
+				maxWidth="sm"
+				fullWidth>
 				<DialogTitle>Add New Room</DialogTitle>
 				<DialogContent>
-					<DialogContentText sx={{ mb: 2 }}>
+					<DialogContentText sx={{ my: 2 }}>
 						Fill in the details for the new room.
-					</DialogContentText>
+					</DialogContentText>{" "}
 					{submitError && (
-						<Alert severity="error" sx={{ mb: 2 }}>
+						<Alert severity="error" sx={{ my: 2 }}>
 							{submitError}
 						</Alert>
 					)}
@@ -484,14 +488,17 @@ function RoomsPage() {
 			</Dialog>
 
 			{/* Edit Room Dialog */}
-			<Dialog open={openEditDialog} onClose={handleEditClose}>
+			<Dialog
+				open={openEditDialog}
+				onClose={handleEditClose}
+				maxWidth="sm"
+				fullWidth>
 				<DialogTitle>Edit Room Details</DialogTitle>
-				<DialogContent>
-					<DialogContentText sx={{ mb: 2 }}>
+				<DialogContent>					<DialogContentText sx={{ my: 2 }}>
 						Update the room's information.
 					</DialogContentText>
 					{editError && (
-						<Alert severity="error" sx={{ mb: 2 }}>
+						<Alert severity="error" sx={{ my: 2 }}>
 							{editError}
 						</Alert>
 					)}
@@ -595,15 +602,18 @@ function RoomsPage() {
 			</Dialog>
 
 			{/* Delete Confirmation Dialog */}
-			<Dialog open={openDeleteConfirm} onClose={handleDeleteClose}>
+			<Dialog
+				open={openDeleteConfirm}
+				onClose={handleDeleteClose}
+				maxWidth="sm"
+				fullWidth>
 				<DialogTitle>Confirm Deletion</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
 						Are you sure you want to delete this room record? This action cannot
 						be undone.
-					</DialogContentText>
-					{deleteError && (
-						<Alert severity="error" sx={{ mt: 2 }}>
+					</DialogContentText>					{deleteError && (
+						<Alert severity="error" sx={{ my: 2 }}>
 							{deleteError}
 						</Alert>
 					)}

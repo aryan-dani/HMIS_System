@@ -442,11 +442,12 @@ function DoctorsPage() {
 				fullWidth>
 				<DialogTitle>Add New Doctor</DialogTitle>
 				<DialogContent>
-					<DialogContentText sx={{ mb: 2 }}>
+					{" "}
+					<DialogContentText sx={{ my: 2 }}>
 						Fill in the details for the new doctor.
-					</DialogContentText>
+					</DialogContentText>{" "}
 					{submitError && (
-						<Alert severity="error" sx={{ mb: 2 }}>
+						<Alert severity="error" sx={{ my: 2 }}>
 							{submitError}
 						</Alert>
 					)}
@@ -530,11 +531,12 @@ function DoctorsPage() {
 				fullWidth>
 				<DialogTitle>Edit Doctor Details</DialogTitle>
 				<DialogContent>
-					<DialogContentText sx={{ mb: 2 }}>
+					{" "}
+					<DialogContentText sx={{ my: 2 }}>
 						Update the doctor's information.
-					</DialogContentText>
+					</DialogContentText>{" "}
 					{editError && (
-						<Alert severity="error" sx={{ mb: 2 }}>
+						<Alert severity="error" sx={{ my: 2 }}>
 							{editError}
 						</Alert>
 					)}
@@ -661,15 +663,19 @@ function DoctorsPage() {
 			</Dialog>
 
 			{/* Delete Confirmation Dialog */}
-			<Dialog open={openDeleteConfirm} onClose={handleDeleteClose}>
+			<Dialog
+				open={openDeleteConfirm}
+				onClose={handleDeleteClose}
+				maxWidth="sm"
+				fullWidth>
 				<DialogTitle>Confirm Deletion</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
 						Are you sure you want to delete this doctor record? This action
 						cannot be undone.
-					</DialogContentText>
+					</DialogContentText>{" "}
 					{deleteError && (
-						<Alert severity="error" sx={{ mt: 2 }}>
+						<Alert severity="error" sx={{ my: 2 }}>
 							{deleteError}
 						</Alert>
 					)}
