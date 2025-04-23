@@ -1,7 +1,7 @@
 /** @format */
 
-import React, { useState, useEffect, useCallback, useMemo } from "react"; // Added useCallback
-import { supabase } from "../supabaseClient"; // Import supabase client
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { supabase } from "../supabaseClient";
 import {
 	Box,
 	Typography,
@@ -15,119 +15,130 @@ import {
 	Paper,
 	CircularProgress,
 	Alert,
-	Dialog, // Import Dialog components
+	Dialog,
 	DialogActions,
 	DialogContent,
 	DialogContentText,
 	DialogTitle,
 	TextField,
-	InputAdornment, // For search icon
-	IconButton, // For delete icon button
+	InputAdornment,
+	IconButton,
+	MenuItem,
+	Select,
+	FormControl,
+	InputLabel,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add"; // Icon for the button
-import SearchIcon from "@mui/icons-material/Search"; // Icon for search
-import EditIcon from "@mui/icons-material/Edit"; // Icon for edit button
-import DeleteIcon from "@mui/icons-material/Delete"; // Icon for delete button
-import VisibilityIcon from "@mui/icons-material/Visibility"; // Icon for view button
-import debounce from "lodash.debounce"; // Import debounce
+import AddIcon from "@mui/icons-material/Add";
+import SearchIcon from "@mui/icons-material/Search";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import debounce from "lodash.debounce";
+
+// Assume a structure for the patients table:
+// id (auto-increment, unique), created_at, full_name, dob (date), gender, address, phone, email, medical_history (text)
+
+const GENDERS = ["Male", "Female", "Other", "Prefer not to say"];
 
 function PatientsPage() {
 	const [patients, setPatients] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
-	const [openAddDialog, setOpenAddDialog] = useState(false); // State for dialog visibility
-	const [newPatientData, setNewPatientData] = useState({
-		// State for new patient form data
-		full_name: "",
-		age: "",
-		gender: "",
-		phone: "",
-		address: "",
-		emergency_contact: "",
-	});
-	const [submitLoading, setSubmitLoading] = useState(false); // Loading state for submission
-	const [submitError, setSubmitError] = useState(null); // Error state for submission
-	const [searchQuery, setSearchQuery] = useState(""); // State for search query
+	const [searchQuery, setSearchQuery] = useState("");
 
-	// --- Edit State ---
+	// Add Dialog State
+	const [openAddDialog, setOpenAddDialog] = useState(false);
+	const [newPatientData, setNewPatientData] = useState({
+		full_name: "",
+		dob: "", // Date of Birth
+		gender: GENDERS[0],
+		address: "",
+		phone: "",
+		email: "",
+		medical_history: "",
+	});
+	const [submitLoading, setSubmitLoading] = useState(false);
+	const [submitError, setSubmitError] = useState(null);
+
+	// Edit Dialog State
 	const [openEditDialog, setOpenEditDialog] = useState(false);
-	const [editingPatient, setEditingPatient] = useState(null); // Store the patient being edited
+	const [editingPatient, setEditingPatient] = useState(null);
 	const [editLoading, setEditLoading] = useState(false);
 	const [editError, setEditError] = useState(null);
-	// --- End Edit State ---
 
-	// --- View State ---
+	// View Dialog State
 	const [openViewDialog, setOpenViewDialog] = useState(false);
 	const [viewingPatient, setViewingPatient] = useState(null);
-	// --- End View State ---
 
-	// --- Delete State ---
+	// Delete Dialog State
 	const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
 	const [deletingPatientId, setDeletingPatientId] = useState(null);
 	const [deleteLoading, setDeleteLoading] = useState(false);
 	const [deleteError, setDeleteError] = useState(null);
-	// --- End Delete State ---
 
-	// Wrap fetchPatients in useCallback to stabilize its reference
-	// Define fetchPatients *before* useEffects that use it
+	// Fetch Patients Function
 	const fetchPatients = useCallback(async (query = "") => {
-		// setLoading(true); // Loading is handled by the useEffect calling this
 		setError(null);
 		try {
 			let supabaseQuery = supabase
-				.from("patients")
+				.from("patients") // Assuming 'patients' table
 				.select(
-					"id, full_name, age, gender, phone, address, emergency_contact, created_at"
-				) // Select more columns for editing/viewing
+					"id, full_name, dob, gender, phone, email, address, medical_history, created_at"
+				)
 				.order("created_at", { ascending: false });
 
-			// Apply search filter if query exists
 			if (query) {
-				// Search by name (case-insensitive) or ID
-				// Check if query is a number (potential ID)
 				const potentialId = parseInt(query, 10);
+				let filters = [
+					`full_name.ilike.%${query}%`,
+					`phone.ilike.%${query}%`,
+					`email.ilike.%${query}%`,
+				];
 				if (!isNaN(potentialId)) {
-					supabaseQuery = supabaseQuery.or(
-						`full_name.ilike.%${query}%,id.eq.${potentialId}`
-					);
-				} else {
-					supabaseQuery = supabaseQuery.ilike("full_name", `%${query}%`);
+					filters.push(`id.eq.${potentialId}`);
 				}
+				supabaseQuery = supabaseQuery.or(filters.join(","));
 			}
 
 			const { data, error: fetchError } = await supabaseQuery;
 
 			if (fetchError) {
-				throw fetchError;
+				if (fetchError.code === "42P01") {
+					console.warn(
+						"Supabase fetch error: 'patients' table not found. Please ensure it exists."
+					);
+					setError(
+						"Patient data is currently unavailable. Setup might be incomplete."
+					);
+					setPatients([]);
+				} else {
+					throw fetchError;
+				}
+			} else {
+				setPatients(data || []);
 			}
-			setPatients(data || []);
 		} catch (err) {
 			console.error("Error fetching patients:", err.message);
 			setError("Failed to fetch patients. Please try again.");
 		} finally {
 			setLoading(false);
 		}
-	}, []); // Empty dependency array is fine here as it doesn't depend on props or state
+	}, []);
 
-	// Debounced fetch function - Corrected usage with useMemo
+	// Debounced Fetch
 	const debouncedFetchPatients = useMemo(
-		() =>
-			debounce((query) => {
-				fetchPatients(query);
-			}, 500), // 500ms delay
-		[fetchPatients] // Dependency: Recreate debounce if fetchPatients changes
+		() => debounce((query) => fetchPatients(query), 500),
+		[fetchPatients]
 	);
 
+	// Initial Fetch and Search Trigger
 	useEffect(() => {
-		// Initial fetch without query
 		fetchPatients();
-	}, [fetchPatients]); // Add fetchPatients as dependency
+	}, [fetchPatients]);
 
 	useEffect(() => {
-		// Fetch patients when searchQuery changes (debounced)
-		setLoading(true); // Show loading indicator immediately on search change
+		setLoading(true);
 		debouncedFetchPatients(searchQuery);
-		// Cleanup function to cancel debounce on unmount or if query changes quickly
 		return () => {
 			debouncedFetchPatients.cancel();
 		};
@@ -139,41 +150,28 @@ function PatientsPage() {
 	};
 
 	// --- Add Dialog Handlers ---
-
-	const handleClickOpen = () => {
-		setSubmitError(null); // Clear previous submission errors when opening
+	const handleAddClickOpen = () => {
+		setSubmitError(null);
 		setNewPatientData({
-			// Reset form
 			full_name: "",
-			age: "",
-			gender: "",
-			phone: "",
+			dob: "",
+			gender: GENDERS[0],
 			address: "",
-			emergency_contact: "",
+			phone: "",
+			email: "",
+			medical_history: "",
 		});
 		setOpenAddDialog(true);
 	};
 
-	const handleClose = () => {
+	const handleAddClose = () => {
 		setOpenAddDialog(false);
-		setSubmitError(null); // Clear submission error on close
-		// Reset form data when closing
-		setNewPatientData({
-			full_name: "",
-			age: "",
-			gender: "",
-			phone: "",
-			address: "",
-			emergency_contact: "",
-		});
+		setSubmitError(null);
 	};
 
 	const handleAddInputChange = (e) => {
 		const { name, value } = e.target;
-		// Convert age to number if the input is for age
-		const processedValue =
-			name === "age" ? (value === "" ? "" : parseInt(value, 10)) : value;
-		setNewPatientData({ ...newPatientData, [name]: processedValue });
+		setNewPatientData({ ...newPatientData, [name]: value });
 	};
 
 	const handleAddSubmit = async (e) => {
@@ -181,33 +179,33 @@ function PatientsPage() {
 		setSubmitLoading(true);
 		setSubmitError(null);
 
-		// Basic validation (optional, enhance as needed)
-		if (!newPatientData.full_name || newPatientData.age === "") {
-			// Check if age is empty string
-			setSubmitError("Full Name and Age are required.");
+		if (
+			!newPatientData.full_name ||
+			!newPatientData.dob ||
+			!newPatientData.gender
+		) {
+			setSubmitError("Full Name, Date of Birth, and Gender are required.");
 			setSubmitLoading(false);
 			return;
 		}
 
 		try {
-			// Ensure age is a number or null if empty
-			const patientDataToInsert = {
-				...newPatientData,
-				age: newPatientData.age === "" ? null : newPatientData.age,
-			};
+			// Ensure dob is handled correctly (might need formatting if Supabase expects a specific date format)
+			const patientDataToInsert = { ...newPatientData };
+			if (!patientDataToInsert.dob) {
+				patientDataToInsert.dob = null; // Handle empty date if needed
+			}
 
 			const { data, error: insertError } = await supabase
 				.from("patients")
-				.insert([patientDataToInsert]) // Insert data
-				.select(); // Optionally select the inserted data back
+				.insert([patientDataToInsert])
+				.select();
 
-			if (insertError) {
-				throw insertError;
-			}
+			if (insertError) throw insertError;
 
 			console.log("Patient added:", data);
-			fetchPatients(searchQuery); // Refresh the patient list with current search query
-			handleClose(); // Close the dialog on success
+			fetchPatients(searchQuery); // Refresh list
+			handleAddClose();
 		} catch (err) {
 			console.error("Error adding patient:", err.message);
 			setSubmitError(`Failed to add patient: ${err.message}`);
@@ -218,22 +216,22 @@ function PatientsPage() {
 
 	// --- Edit Dialog Handlers ---
 	const handleEditClick = (patient) => {
-		setEditError(null); // Clear previous edit errors
-		setEditingPatient({ ...patient }); // Set the patient data to edit (create a copy)
+		setEditError(null);
+		// Format date for input type='date'
+		const formattedDob = patient.dob ? patient.dob.split("T")[0] : "";
+		setEditingPatient({ ...patient, dob: formattedDob });
 		setOpenEditDialog(true);
 	};
 
 	const handleEditClose = () => {
 		setOpenEditDialog(false);
-		setEditingPatient(null); // Clear editing patient data
+		setEditingPatient(null);
 		setEditError(null);
 	};
 
 	const handleEditInputChange = (e) => {
 		const { name, value } = e.target;
-		const processedValue =
-			name === "age" ? (value === "" ? "" : parseInt(value, 10)) : value;
-		setEditingPatient({ ...editingPatient, [name]: processedValue });
+		setEditingPatient({ ...editingPatient, [name]: value });
 	};
 
 	const handleEditSubmit = async (e) => {
@@ -246,34 +244,34 @@ function PatientsPage() {
 			setEditLoading(false);
 			return;
 		}
-
-		// Basic validation
-		if (!editingPatient.full_name || editingPatient.age === "") {
-			setEditError("Full Name and Age are required.");
+		if (
+			!editingPatient.full_name ||
+			!editingPatient.dob ||
+			!editingPatient.gender
+		) {
+			setEditError("Full Name, Date of Birth, and Gender are required.");
 			setEditLoading(false);
 			return;
 		}
 
 		try {
-			// Prepare data for update (remove id and created_at)
 			const { id, created_at, ...updateData } = editingPatient;
-			const patientDataToUpdate = {
-				...updateData,
-				age: updateData.age === "" ? null : updateData.age,
-			};
+			// Ensure dob is handled correctly
+			const patientDataToUpdate = { ...updateData };
+			if (!patientDataToUpdate.dob) {
+				patientDataToUpdate.dob = null;
+			}
 
 			const { error: updateError } = await supabase
 				.from("patients")
 				.update(patientDataToUpdate)
-				.eq("id", id); // Match the patient ID
+				.eq("id", id);
 
-			if (updateError) {
-				throw updateError;
-			}
+			if (updateError) throw updateError;
 
 			console.log("Patient updated:", id);
-			fetchPatients(searchQuery); // Refresh the patient list with current search query
-			handleEditClose(); // Close the dialog on success
+			fetchPatients(searchQuery); // Refresh list
+			handleEditClose();
 		} catch (err) {
 			console.error("Error updating patient:", err.message);
 			setEditError(`Failed to update patient: ${err.message}`);
@@ -281,7 +279,6 @@ function PatientsPage() {
 			setEditLoading(false);
 		}
 	};
-	// --- End Edit Dialog Handlers ---
 
 	// --- View Dialog Handlers ---
 	const handleViewClick = (patient) => {
@@ -293,11 +290,10 @@ function PatientsPage() {
 		setOpenViewDialog(false);
 		setViewingPatient(null);
 	};
-	// --- End View Dialog Handlers ---
 
 	// --- Delete Dialog Handlers ---
 	const handleDeleteClick = (patientId) => {
-		setDeleteError(null); // Clear previous delete errors
+		setDeleteError(null);
 		setDeletingPatientId(patientId);
 		setOpenDeleteConfirm(true);
 	};
@@ -324,47 +320,46 @@ function PatientsPage() {
 				.delete()
 				.eq("id", deletingPatientId);
 
-			if (deleteError) {
-				throw deleteError;
-			}
+			if (deleteError) throw deleteError;
 
 			console.log("Patient deleted:", deletingPatientId);
-			fetchPatients(searchQuery); // Refresh the list
-			handleDeleteClose(); // Close the confirmation dialog
+			fetchPatients(searchQuery); // Refresh list
+			handleDeleteClose();
 		} catch (err) {
 			console.error("Error deleting patient:", err.message);
-			setDeleteError(`Failed to delete patient: ${err.message}`);
+			// Handle potential foreign key constraint errors if patients are linked elsewhere
+			if (err.code === "23503") {
+				// PostgreSQL foreign key violation
+				setDeleteError(
+					"Cannot delete patient: They may have associated records (e.g., appointments, bills). Please remove those first."
+				);
+			} else {
+				setDeleteError(`Failed to delete patient: ${err.message}`);
+			}
 		} finally {
 			setDeleteLoading(false);
 		}
 	};
-	// --- End Delete Dialog Handlers ---
-
-	// Placeholder function for adding a patient - Now opens the dialog
-	const handleAddPatient = () => {
-		console.log("Add Patient button clicked - opening dialog");
-		handleClickOpen(); // Open the dialog
-	};
 
 	return (
 		<Box>
+			{/* Header and Actions */}
 			<Box
 				sx={{
 					display: "flex",
 					justifyContent: "space-between",
 					alignItems: "center",
 					mb: 2,
-					flexWrap: "wrap", // Allow wrapping on smaller screens
-					gap: 2, // Add gap between items
+					flexWrap: "wrap",
+					gap: 2,
 				}}>
 				<Typography variant="h4" component="h1">
 					Patient Management
 				</Typography>
-				{/* Search Input */}
 				<TextField
 					variant="outlined"
 					size="small"
-					placeholder="Search by Name or ID..."
+					placeholder="Search by ID, Name, Phone, Email..."
 					value={searchQuery}
 					onChange={handleSearchChange}
 					InputProps={{
@@ -374,50 +369,52 @@ function PatientsPage() {
 							</InputAdornment>
 						),
 					}}
-					sx={{ minWidth: "250px", flexGrow: { xs: 1, sm: 0 } }} // Allow grow on extra small screens
+					sx={{ minWidth: "300px", flexGrow: { xs: 1, sm: 0 } }}
 				/>
 				<Button
 					variant="contained"
 					startIcon={<AddIcon />}
-					onClick={handleAddPatient}>
+					onClick={handleAddClickOpen}>
 					Add Patient
 				</Button>
 			</Box>
 
-			{loading &&
-				!searchQuery && ( // Show main loading only on initial load
-					<Box sx={{ display: "flex", justifyContent: "center", my: 3 }}>
-						<CircularProgress />
-					</Box>
-				)}
+			{/* Loading and Error Display */}
+			{loading && !searchQuery && (
+				<Box sx={{ display: "flex", justifyContent: "center", my: 3 }}>
+					<CircularProgress />
+				</Box>
+			)}
 			{error && (
 				<Alert severity="error" sx={{ my: 2 }}>
 					{error}
 				</Alert>
 			)}
-			{/* Table is always rendered, but body content changes based on loading/data */}
+
+			{/* Patients Table */}
 			<TableContainer component={Paper}>
-				<Table sx={{ minWidth: 650 }} aria-label="simple patients table">
+				<Table sx={{ minWidth: 650 }} aria-label="patients table">
 					<TableHead>
 						<TableRow>
 							<TableCell>ID</TableCell>
 							<TableCell>Full Name</TableCell>
-							<TableCell>Age</TableCell>
+							<TableCell>Date of Birth</TableCell>
 							<TableCell>Gender</TableCell>
 							<TableCell>Phone</TableCell>
+							<TableCell>Email</TableCell>
 							<TableCell align="right">Actions</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{loading ? ( // Show loading indicator inside table body during search fetch or initial load
+						{loading ? (
 							<TableRow>
-								<TableCell colSpan={6} align="center">
+								<TableCell colSpan={7} align="center">
 									<CircularProgress size={30} />
 								</TableCell>
 							</TableRow>
-						) : patients.length === 0 ? (
+						) : patients.length === 0 && !error ? (
 							<TableRow>
-								<TableCell colSpan={6} align="center">
+								<TableCell colSpan={7} align="center">
 									{searchQuery
 										? `No patients found matching "${searchQuery}".`
 										: "No patients found. Click 'Add Patient' to begin."}
@@ -428,15 +425,20 @@ function PatientsPage() {
 								<TableRow
 									key={patient.id}
 									sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-									<TableCell component="th" scope="row">
-										{patient.id}
-									</TableCell>
+									<TableCell>{patient.id}</TableCell>
 									<TableCell>{patient.full_name || "N/A"}</TableCell>
-									<TableCell>{patient.age ?? "N/A"}</TableCell>{" "}
-									{/* Use nullish coalescing */}
+									<TableCell>
+										{patient.dob
+											? new Date(patient.dob).toLocaleDateString()
+											: "N/A"}
+									</TableCell>
 									<TableCell>{patient.gender || "N/A"}</TableCell>
 									<TableCell>{patient.phone || "N/A"}</TableCell>
-									<TableCell align="right">
+									<TableCell>{patient.email || "N/A"}</TableCell>
+									<TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+										{" "}
+										{/* Prevent wrapping */}
+										{/* Wrap buttons in a Box for better control if needed, but whiteSpace might be enough */}
 										<IconButton
 											size="small"
 											sx={{ mr: 0.5 }}
@@ -466,14 +468,17 @@ function PatientsPage() {
 				</Table>
 			</TableContainer>
 
-			{/* --- Add Patient Dialog --- */}
-			<Dialog open={openAddDialog} onClose={handleClose}>
+			{/* Add Patient Dialog */}
+			<Dialog
+				open={openAddDialog}
+				onClose={handleAddClose}
+				maxWidth="sm"
+				fullWidth>
 				<DialogTitle>Add New Patient</DialogTitle>
 				<DialogContent>
 					<DialogContentText sx={{ mb: 2 }}>
-						Please fill in the details for the new patient.
+						Fill in the details for the new patient.
 					</DialogContentText>
-					{/* Display submission error inside the dialog */}
 					{submitError && (
 						<Alert severity="error" sx={{ mb: 2 }}>
 							{submitError}
@@ -482,45 +487,49 @@ function PatientsPage() {
 					<TextField
 						autoFocus
 						margin="dense"
-						id="full_name"
-						name="full_name" // Name attribute matches state key
+						name="full_name"
 						label="Full Name"
 						type="text"
 						fullWidth
 						variant="standard"
 						value={newPatientData.full_name}
 						onChange={handleAddInputChange}
-						required // Mark name as required
+						required
 					/>
 					<TextField
 						margin="dense"
-						id="age"
-						name="age"
-						label="Age"
-						type="number" // Use number type for age
+						name="dob"
+						label="Date of Birth"
+						type="date"
 						fullWidth
 						variant="standard"
-						value={newPatientData.age}
+						value={newPatientData.dob}
 						onChange={handleAddInputChange}
-						required // Mark age as required
+						required
+						InputLabelProps={{
+							shrink: true, // Keep label floated for date input
+						}}
 					/>
-					<TextField // Added Gender field
-						margin="dense"
-						id="gender"
-						name="gender"
-						label="Gender"
-						type="text"
-						fullWidth
-						variant="standard"
-						value={newPatientData.gender}
-						onChange={handleAddInputChange}
-					/>
+					<FormControl fullWidth margin="dense" variant="standard" required>
+						<InputLabel id="add-patient-gender-label">Gender</InputLabel>
+						<Select
+							labelId="add-patient-gender-label"
+							name="gender"
+							value={newPatientData.gender}
+							onChange={handleAddInputChange}
+							label="Gender">
+							{GENDERS.map((gender) => (
+								<MenuItem key={gender} value={gender}>
+									{gender}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
 					<TextField
 						margin="dense"
-						id="phone"
 						name="phone"
 						label="Phone Number"
-						type="tel" // Use tel type for phone
+						type="tel"
 						fullWidth
 						variant="standard"
 						value={newPatientData.phone}
@@ -528,12 +537,21 @@ function PatientsPage() {
 					/>
 					<TextField
 						margin="dense"
-						id="address"
+						name="email"
+						label="Email Address"
+						type="email"
+						fullWidth
+						variant="standard"
+						value={newPatientData.email}
+						onChange={handleAddInputChange}
+					/>
+					<TextField
+						margin="dense"
 						name="address"
 						label="Address"
 						type="text"
 						fullWidth
-						multiline // Allow multiple lines for address
+						multiline
 						rows={2}
 						variant="standard"
 						value={newPatientData.address}
@@ -541,18 +559,19 @@ function PatientsPage() {
 					/>
 					<TextField
 						margin="dense"
-						id="emergency_contact"
-						name="emergency_contact"
-						label="Emergency Contact (Name & Phone)"
+						name="medical_history"
+						label="Medical History (Optional)"
 						type="text"
 						fullWidth
+						multiline
+						rows={3}
 						variant="standard"
-						value={newPatientData.emergency_contact}
+						value={newPatientData.medical_history}
 						onChange={handleAddInputChange}
 					/>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleClose} disabled={submitLoading}>
+					<Button onClick={handleAddClose} disabled={submitLoading}>
 						Cancel
 					</Button>
 					<Button onClick={handleAddSubmit} disabled={submitLoading}>
@@ -560,16 +579,18 @@ function PatientsPage() {
 					</Button>
 				</DialogActions>
 			</Dialog>
-			{/* --- End Add Patient Dialog --- */}
 
-			{/* --- Edit Patient Dialog --- */}
-			<Dialog open={openEditDialog} onClose={handleEditClose}>
+			{/* Edit Patient Dialog */}
+			<Dialog
+				open={openEditDialog}
+				onClose={handleEditClose}
+				maxWidth="sm"
+				fullWidth>
 				<DialogTitle>Edit Patient Details</DialogTitle>
 				<DialogContent>
 					<DialogContentText sx={{ mb: 2 }}>
-						Update the patient's information below.
+						Update the patient's information.
 					</DialogContentText>
-					{/* Display edit error inside the dialog */}
 					{editError && (
 						<Alert severity="error" sx={{ mb: 2 }}>
 							{editError}
@@ -580,42 +601,44 @@ function PatientsPage() {
 							<TextField
 								autoFocus
 								margin="dense"
-								id="edit_full_name"
 								name="full_name"
 								label="Full Name"
 								type="text"
 								fullWidth
 								variant="standard"
-								value={editingPatient.full_name || ""} // Handle potential null/undefined
+								value={editingPatient.full_name || ""}
 								onChange={handleEditInputChange}
 								required
 							/>
 							<TextField
 								margin="dense"
-								id="edit_age"
-								name="age"
-								label="Age"
-								type="number"
+								name="dob"
+								label="Date of Birth"
+								type="date"
 								fullWidth
 								variant="standard"
-								value={editingPatient.age ?? ""} // Handle potential null/undefined
+								value={editingPatient.dob || ""}
 								onChange={handleEditInputChange}
 								required
+								InputLabelProps={{ shrink: true }}
 							/>
+							<FormControl fullWidth margin="dense" variant="standard" required>
+								<InputLabel id="edit-patient-gender-label">Gender</InputLabel>
+								<Select
+									labelId="edit-patient-gender-label"
+									name="gender"
+									value={editingPatient.gender || ""}
+									onChange={handleEditInputChange}
+									label="Gender">
+									{GENDERS.map((gender) => (
+										<MenuItem key={gender} value={gender}>
+											{gender}
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
 							<TextField
 								margin="dense"
-								id="edit_gender"
-								name="gender"
-								label="Gender"
-								type="text"
-								fullWidth
-								variant="standard"
-								value={editingPatient.gender || ""}
-								onChange={handleEditInputChange}
-							/>
-							<TextField
-								margin="dense"
-								id="edit_phone"
 								name="phone"
 								label="Phone Number"
 								type="tel"
@@ -626,7 +649,16 @@ function PatientsPage() {
 							/>
 							<TextField
 								margin="dense"
-								id="edit_address"
+								name="email"
+								label="Email Address"
+								type="email"
+								fullWidth
+								variant="standard"
+								value={editingPatient.email || ""}
+								onChange={handleEditInputChange}
+							/>
+							<TextField
+								margin="dense"
 								name="address"
 								label="Address"
 								type="text"
@@ -639,13 +671,14 @@ function PatientsPage() {
 							/>
 							<TextField
 								margin="dense"
-								id="edit_emergency_contact"
-								name="emergency_contact"
-								label="Emergency Contact (Name & Phone)"
+								name="medical_history"
+								label="Medical History"
 								type="text"
 								fullWidth
+								multiline
+								rows={3}
 								variant="standard"
-								value={editingPatient.emergency_contact || ""}
+								value={editingPatient.medical_history || ""}
 								onChange={handleEditInputChange}
 							/>
 						</>
@@ -660,9 +693,8 @@ function PatientsPage() {
 					</Button>
 				</DialogActions>
 			</Dialog>
-			{/* --- End Edit Patient Dialog --- */}
 
-			{/* --- View Patient Dialog --- */}
+			{/* View Patient Dialog */}
 			<Dialog
 				open={openViewDialog}
 				onClose={handleViewClose}
@@ -670,33 +702,42 @@ function PatientsPage() {
 				fullWidth>
 				<DialogTitle>Patient Details</DialogTitle>
 				<DialogContent dividers>
-					{" "}
-					{/* Add dividers for better separation */}
 					{viewingPatient ? (
 						<Box>
-							<Typography variant="subtitle1" gutterBottom>
+							<Typography gutterBottom>
 								<strong>ID:</strong> {viewingPatient.id}
 							</Typography>
-							<Typography variant="subtitle1" gutterBottom>
+							<Typography gutterBottom>
 								<strong>Full Name:</strong> {viewingPatient.full_name || "N/A"}
 							</Typography>
-							<Typography variant="subtitle1" gutterBottom>
-								<strong>Age:</strong> {viewingPatient.age ?? "N/A"}
+							<Typography gutterBottom>
+								<strong>Date of Birth:</strong>{" "}
+								{viewingPatient.dob
+									? new Date(viewingPatient.dob).toLocaleDateString()
+									: "N/A"}
 							</Typography>
-							<Typography variant="subtitle1" gutterBottom>
+							<Typography gutterBottom>
 								<strong>Gender:</strong> {viewingPatient.gender || "N/A"}
 							</Typography>
-							<Typography variant="subtitle1" gutterBottom>
+							<Typography gutterBottom>
 								<strong>Phone:</strong> {viewingPatient.phone || "N/A"}
 							</Typography>
-							<Typography variant="subtitle1" gutterBottom>
+							<Typography gutterBottom>
+								<strong>Email:</strong> {viewingPatient.email || "N/A"}
+							</Typography>
+							<Typography gutterBottom>
 								<strong>Address:</strong> {viewingPatient.address || "N/A"}
 							</Typography>
-							<Typography variant="subtitle1" gutterBottom>
-								<strong>Emergency Contact:</strong>{" "}
-								{viewingPatient.emergency_contact || "N/A"}
+							<Typography gutterBottom component="div">
+								<strong>Medical History:</strong>
+								<Typography
+									variant="body2"
+									component="pre"
+									sx={{ whiteSpace: "pre-wrap", fontFamily: "inherit" }}>
+									{viewingPatient.medical_history || "N/A"}
+								</Typography>
 							</Typography>
-							<Typography variant="subtitle1" gutterBottom>
+							<Typography gutterBottom>
 								<strong>Registered On:</strong>{" "}
 								{viewingPatient.created_at
 									? new Date(viewingPatient.created_at).toLocaleString()
@@ -711,21 +752,16 @@ function PatientsPage() {
 					<Button onClick={handleViewClose}>Close</Button>
 				</DialogActions>
 			</Dialog>
-			{/* --- End View Patient Dialog --- */}
 
-			{/* --- Delete Confirmation Dialog --- */}
-			<Dialog
-				open={openDeleteConfirm}
-				onClose={handleDeleteClose}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description">
-				<DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+			{/* Delete Confirmation Dialog */}
+			<Dialog open={openDeleteConfirm} onClose={handleDeleteClose}>
+				<DialogTitle>Confirm Deletion</DialogTitle>
 				<DialogContent>
-					<DialogContentText id="alert-dialog-description">
+					<DialogContentText>
 						Are you sure you want to delete this patient record? This action
-						cannot be undone.
+						cannot be undone and might affect related records (e.g., bills,
+						appointments).
 					</DialogContentText>
-					{/* Display delete error inside the dialog */}
 					{deleteError && (
 						<Alert severity="error" sx={{ mt: 2 }}>
 							{deleteError}
@@ -749,7 +785,6 @@ function PatientsPage() {
 					</Button>
 				</DialogActions>
 			</Dialog>
-			{/* --- End Delete Confirmation Dialog --- */}
 		</Box>
 	);
 }

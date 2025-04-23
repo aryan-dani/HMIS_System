@@ -23,6 +23,10 @@ import {
 	TextField,
 	InputAdornment,
 	IconButton,
+	MenuItem, // Added for Select dropdown
+	Select, // Added for Select dropdown
+	FormControl, // Added for Select dropdown
+	InputLabel, // Added for Select dropdown
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
@@ -33,6 +37,8 @@ import debounce from "lodash.debounce";
 
 // Assume a structure for the doctors table:
 // id, created_at, full_name, specialization, phone, email, availability_status (e.g., 'Available', 'Unavailable', 'On Leave')
+
+const DOCTOR_STATUSES = ["Available", "Unavailable", "On Leave", "Busy"]; // Define statuses
 
 function DoctorsPage() {
 	const [doctors, setDoctors] = useState([]);
@@ -47,7 +53,7 @@ function DoctorsPage() {
 		specialization: "",
 		phone: "",
 		email: "",
-		availability_status: "Available", // Default status
+		availability_status: DOCTOR_STATUSES[0], // Default status using constant
 	});
 	const [submitLoading, setSubmitLoading] = useState(false);
 	const [submitError, setSubmitError] = useState(null);
@@ -156,7 +162,7 @@ function DoctorsPage() {
 			specialization: "",
 			phone: "",
 			email: "",
-			availability_status: "Available",
+			availability_status: DOCTOR_STATUSES[0],
 		});
 		setOpenAddDialog(true);
 	};
@@ -396,7 +402,9 @@ function DoctorsPage() {
 									<TableCell>{doctor.specialization || "N/A"}</TableCell>
 									<TableCell>{doctor.phone || "N/A"}</TableCell>
 									<TableCell>{doctor.availability_status || "N/A"}</TableCell>
-									<TableCell align="right">
+									<TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+										{" "}
+										{/* Prevent wrapping */}
 										<IconButton
 											size="small"
 											sx={{ mr: 0.5 }}
@@ -427,7 +435,11 @@ function DoctorsPage() {
 			</TableContainer>
 
 			{/* Add Doctor Dialog */}
-			<Dialog open={openAddDialog} onClose={handleAddClose}>
+			<Dialog
+				open={openAddDialog}
+				onClose={handleAddClose}
+				maxWidth="sm"
+				fullWidth>
 				<DialogTitle>Add New Doctor</DialogTitle>
 				<DialogContent>
 					<DialogContentText sx={{ mb: 2 }}>
@@ -481,17 +493,24 @@ function DoctorsPage() {
 						value={newDoctorData.email}
 						onChange={handleAddInputChange}
 					/>
-					<TextField
-						margin="dense"
-						name="availability_status"
-						label="Availability Status"
-						type="text"
-						fullWidth
-						variant="standard"
-						value={newDoctorData.availability_status}
-						onChange={handleAddInputChange}
-						helperText="e.g., Available, Unavailable, On Leave"
-					/>
+					{/* Replace TextField with Select for availability_status */}
+					<FormControl fullWidth margin="dense" variant="standard">
+						<InputLabel id="add-doctor-status-label">
+							Availability Status
+						</InputLabel>
+						<Select
+							labelId="add-doctor-status-label"
+							name="availability_status"
+							value={newDoctorData.availability_status}
+							onChange={handleAddInputChange}
+							label="Availability Status">
+							{DOCTOR_STATUSES.map((status) => (
+								<MenuItem key={status} value={status}>
+									{status}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={handleAddClose} disabled={submitLoading}>
@@ -504,7 +523,11 @@ function DoctorsPage() {
 			</Dialog>
 
 			{/* Edit Doctor Dialog */}
-			<Dialog open={openEditDialog} onClose={handleEditClose}>
+			<Dialog
+				open={openEditDialog}
+				onClose={handleEditClose}
+				maxWidth="sm"
+				fullWidth>
 				<DialogTitle>Edit Doctor Details</DialogTitle>
 				<DialogContent>
 					<DialogContentText sx={{ mb: 2 }}>
@@ -560,17 +583,24 @@ function DoctorsPage() {
 								value={editingDoctor.email || ""}
 								onChange={handleEditInputChange}
 							/>
-							<TextField
-								margin="dense"
-								name="availability_status"
-								label="Availability Status"
-								type="text"
-								fullWidth
-								variant="standard"
-								value={editingDoctor.availability_status || ""}
-								onChange={handleEditInputChange}
-								helperText="e.g., Available, Unavailable, On Leave"
-							/>
+							{/* Replace TextField with Select for availability_status */}
+							<FormControl fullWidth margin="dense" variant="standard">
+								<InputLabel id="edit-doctor-status-label">
+									Availability Status
+								</InputLabel>
+								<Select
+									labelId="edit-doctor-status-label"
+									name="availability_status"
+									value={editingDoctor.availability_status || ""}
+									onChange={handleEditInputChange}
+									label="Availability Status">
+									{DOCTOR_STATUSES.map((status) => (
+										<MenuItem key={status} value={status}>
+											{status}
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
 						</>
 					)}
 				</DialogContent>
