@@ -2,14 +2,12 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { ThemeProvider, createTheme } from "@mui/material/styles"; // Import ThemeProvider and createTheme
+import { ThemeProvider, createTheme } from "@mui/material/styles"; 
 import CssBaseline from "@mui/material/CssBaseline";
-// import './index.css'; // Keep this commented out
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { AuthProvider } from "./context/AuthContext"; // Import AuthProvider
+import { AuthProvider } from "./context/AuthContext"; 
 
-// Create a custom theme
 const theme = createTheme({
 	palette: {
 		mode: "light", // Or 'dark'

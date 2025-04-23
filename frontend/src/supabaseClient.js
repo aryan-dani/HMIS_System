@@ -10,13 +10,9 @@ const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 if (!supabaseUrl || !supabaseAnonKey) {
 	console.error(
 		"Supabase URL or Anon Key is missing. Make sure to set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY environment variables."
+		//supabase files and keys are located inside the .env file directory.
 	);
-	// Optionally throw an error or handle this case appropriately
-	// throw new Error('Supabase configuration is missing.');
 }
 
-// Create and export the Supabase client instance
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Optional: Log a message to confirm client creation (remove in production)
 console.log("Supabase client initialized.");

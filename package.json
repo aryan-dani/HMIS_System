@@ -1,5 +1,5 @@
 {
-  "dependencies": {
-    "lodash.debounce": "^4.0.8"
-  }
+	"dependencies": {
+		"lodash.debounce": "^4.0.8"
+	}
 }

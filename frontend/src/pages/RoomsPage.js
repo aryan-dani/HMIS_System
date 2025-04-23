@@ -39,8 +39,13 @@ import debounce from "lodash.debounce";
 // id, created_at, room_number, type (e.g., 'General', 'ICU', 'Private'), status (e.g., 'Available', 'Occupied', 'Maintenance')
 
 const ROOM_STATUSES = ["Available", "Occupied", "Maintenance", "Cleaning"];
-const ROOM_TYPES = ["General Ward", "Semi-Private", "Private", "ICU", "Operation Theater"];
-
+const ROOM_TYPES = [
+	"General Ward",
+	"Semi-Private",
+	"Private",
+	"ICU",
+	"Operation Theater",
+];
 
 function RoomsPage() {
 	const [rooms, setRooms] = useState([]);
@@ -296,7 +301,6 @@ function RoomsPage() {
 			setDeleteLoading(false);
 		}
 	};
-
 
 	return (
 		<Box>
