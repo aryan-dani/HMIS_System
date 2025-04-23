@@ -26,6 +26,7 @@ import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import BiotechIcon from "@mui/icons-material/Biotech";
+import EventNoteIcon from "@mui/icons-material/EventNote"; // Import Appointments icon
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import LogoutIcon from "@mui/icons-material/Logout";
 
@@ -38,6 +39,7 @@ const navItems = [
 	{ text: "Rooms", icon: <MeetingRoomIcon />, path: "/rooms" },
 	{ text: "Billing", icon: <ReceiptIcon />, path: "/billing" },
 	{ text: "Pathology", icon: <BiotechIcon />, path: "/pathology" },
+	{ text: "Appointments", icon: <EventNoteIcon />, path: "/appointments" }, // Add Appointments item
 	{ text: "Admin", icon: <AdminPanelSettingsIcon />, path: "/admin" },
 ];
 

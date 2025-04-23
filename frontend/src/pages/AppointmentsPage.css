@@ -1,0 +1,92 @@
+/** @format */
+
+.appointments-page {
+	padding: 20px;
+	font-family: "Poppins", sans-serif; /* Assuming Poppins is used globally or imported */
+}
+
+.appointments-page h1 {
+	margin-bottom: 20px;
+	color: #333;
+}
+
+.appointments-page button {
+	padding: 8px 15px;
+	margin-right: 10px;
+	cursor: pointer;
+	border: none;
+	border-radius: 4px;
+	font-size: 0.9em;
+	font-family: inherit; /* Inherit font from parent (.appointments-page) */
+}
+
+.appointments-page button:first-of-type {
+	background-color: #007bff; /* Blue for primary actions like Add */
+	color: white;
+	margin-bottom: 20px; /* Add space below the main Add button */
+}
+
+.appointments-page button:hover:first-of-type {
+	background-color: #0056b3;
+}
+
+.appointments-page table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	background-color: #fff;
+}
+
+.appointments-page th,
+.appointments-page td {
+	border: 1px solid #ddd;
+	padding: 12px;
+	text-align: left;
+}
+
+/* Center align the content (buttons) in the last cell of each row */
+.appointments-page td:last-child {
+	/* align-items: center; */ /* Incorrect property for text/inline content */
+	text-align: center; /* Correct property */
+}
+
+.appointments-page th {
+	background-color: #f2f2f2;
+	font-weight: 600;
+	color: #333;
+}
+
+.appointments-page tr:nth-child(even) {
+	background-color: #f9f9f9;
+}
+
+.appointments-page tr:hover {
+	background-color: #f1f1f1;
+}
+
+.appointments-page td button {
+	background-color: #6c757d; /* Grey for secondary actions like Edit/Delete */
+	color: white;
+	margin-bottom: 0; /* Reset margin for inline buttons */
+	display: inline-block;
+	margin-left: 5px; /* Add a small gap between buttons */
+	margin-right: 5px;
+}
+
+.appointments-page td button:first-of-type {
+	margin-left: 0; /* Remove extra left margin for the first button */
+}
+
+.appointments-page td button:last-of-type {
+	margin-right: 0;
+	background-color: #dc3545; /* Red for destructive actions like Delete */
+}
+
+.appointments-page td button:hover {
+	background-color: #5a6268;
+}
+
+.appointments-page td button:hover:last-of-type {
+	background-color: #c82333;
+}

@@ -21,6 +21,7 @@ import RoomsPage from "./pages/RoomsPage";
 import BillingPage from "./pages/BillingPage";
 import PathologyPage from "./pages/PathologyPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import AppointmentsPage from "./pages/AppointmentsPage"; // Import the new Appointments page
 
 // Import components
 import { Box, CircularProgress } from "@mui/material";
@@ -66,6 +67,8 @@ function App() {
 					<Route path="rooms" element={<RoomsPage />} />
 					<Route path="billing" element={<BillingPage />} />
 					<Route path="pathology" element={<PathologyPage />} />
+					<Route path="appointments" element={<AppointmentsPage />} />{" "}
+					{/* Add route for Appointments */}
 					<Route path="admin" element={<AdminDashboardPage />} />
 				</Route>
 
