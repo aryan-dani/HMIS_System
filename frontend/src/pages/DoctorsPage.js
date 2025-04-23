@@ -458,7 +458,6 @@ function DoctorsPage() {
 						label="Full Name"
 						type="text"
 						fullWidth
-						variant="standard"
 						value={newDoctorData.full_name}
 						onChange={handleAddInputChange}
 						required
@@ -469,7 +468,6 @@ function DoctorsPage() {
 						label="Specialization"
 						type="text"
 						fullWidth
-						variant="standard"
 						value={newDoctorData.specialization}
 						onChange={handleAddInputChange}
 						required
@@ -480,7 +478,6 @@ function DoctorsPage() {
 						label="Phone Number"
 						type="tel"
 						fullWidth
-						variant="standard"
 						value={newDoctorData.phone}
 						onChange={handleAddInputChange}
 					/>
@@ -490,12 +487,11 @@ function DoctorsPage() {
 						label="Email Address"
 						type="email"
 						fullWidth
-						variant="standard"
 						value={newDoctorData.email}
 						onChange={handleAddInputChange}
 					/>
 					{/* Replace TextField with Select for availability_status */}
-					<FormControl fullWidth margin="dense" variant="standard">
+					<FormControl fullWidth margin="dense">
 						<InputLabel id="add-doctor-status-label">
 							Availability Status
 						</InputLabel>
@@ -549,7 +545,6 @@ function DoctorsPage() {
 								label="Full Name"
 								type="text"
 								fullWidth
-								variant="standard"
 								value={editingDoctor.full_name || ""}
 								onChange={handleEditInputChange}
 								required
@@ -560,7 +555,6 @@ function DoctorsPage() {
 								label="Specialization"
 								type="text"
 								fullWidth
-								variant="standard"
 								value={editingDoctor.specialization || ""}
 								onChange={handleEditInputChange}
 								required
@@ -571,7 +565,6 @@ function DoctorsPage() {
 								label="Phone Number"
 								type="tel"
 								fullWidth
-								variant="standard"
 								value={editingDoctor.phone || ""}
 								onChange={handleEditInputChange}
 							/>
@@ -581,12 +574,11 @@ function DoctorsPage() {
 								label="Email Address"
 								type="email"
 								fullWidth
-								variant="standard"
 								value={editingDoctor.email || ""}
 								onChange={handleEditInputChange}
 							/>
 							{/* Replace TextField with Select for availability_status */}
-							<FormControl fullWidth margin="dense" variant="standard">
+							<FormControl fullWidth margin="dense">
 								<InputLabel id="edit-doctor-status-label">
 									Availability Status
 								</InputLabel>

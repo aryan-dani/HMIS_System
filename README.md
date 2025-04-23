@@ -1,6 +1,6 @@
 <!-- @format -->
 
-# HMIS System - Hospital Management Information System
+# MedGrid - Hospital Management Information System
 
 A web application for managing hospital operations, including patients, doctors, rooms, billing, and pathology records. Built with React, Material UI, and Supabase.
 
@@ -41,7 +41,7 @@ A web application for managing hospital operations, including patients, doctors,
 
     ```bash
     git clone <your-repository-url>
-    cd HMIS_System/frontend
+    cd MedGrid/frontend # Updated directory name if you rename the root folder
     ```
 
 2.  **Install dependencies:**
@@ -55,7 +55,7 @@ A web application for managing hospital operations, including patients, doctors,
     - Create a Supabase project at [supabase.com](https://supabase.com/).
     - In your Supabase project dashboard, go to `Project Settings` > `API`.
     - Find your Project **URL** and `anon` **public** key.
-    - Create a file named `.env` in the `frontend` directory (`HMIS_System/frontend/.env`).
+    - Create a file named `.env` in the `frontend` directory (`MedGrid/frontend/.env`). # Updated path
     - Add your Supabase credentials to the `.env` file:
       ```env
       REACT_APP_SUPABASE_URL=YOUR_SUPABASE_URL

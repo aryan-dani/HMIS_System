@@ -492,7 +492,6 @@ function PatientsPage() {
 						label="Full Name"
 						type="text"
 						fullWidth
-						variant="standard"
 						value={newPatientData.full_name}
 						onChange={handleAddInputChange}
 						required
@@ -503,7 +502,6 @@ function PatientsPage() {
 						label="Date of Birth"
 						type="date"
 						fullWidth
-						variant="standard"
 						value={newPatientData.dob}
 						onChange={handleAddInputChange}
 						required
@@ -511,7 +509,7 @@ function PatientsPage() {
 							shrink: true, // Keep label floated for date input
 						}}
 					/>
-					<FormControl fullWidth margin="dense" variant="standard" required>
+					<FormControl fullWidth margin="dense" required>
 						<InputLabel id="add-patient-gender-label">Gender</InputLabel>
 						<Select
 							labelId="add-patient-gender-label"
@@ -532,7 +530,6 @@ function PatientsPage() {
 						label="Phone Number"
 						type="tel"
 						fullWidth
-						variant="standard"
 						value={newPatientData.phone}
 						onChange={handleAddInputChange}
 					/>
@@ -542,7 +539,6 @@ function PatientsPage() {
 						label="Email Address"
 						type="email"
 						fullWidth
-						variant="standard"
 						value={newPatientData.email}
 						onChange={handleAddInputChange}
 					/>
@@ -554,7 +550,6 @@ function PatientsPage() {
 						fullWidth
 						multiline
 						rows={2}
-						variant="standard"
 						value={newPatientData.address}
 						onChange={handleAddInputChange}
 					/>
@@ -566,7 +561,6 @@ function PatientsPage() {
 						fullWidth
 						multiline
 						rows={3}
-						variant="standard"
 						value={newPatientData.medical_history}
 						onChange={handleAddInputChange}
 					/>
@@ -607,7 +601,6 @@ function PatientsPage() {
 								label="Full Name"
 								type="text"
 								fullWidth
-								variant="standard"
 								value={editingPatient.full_name || ""}
 								onChange={handleEditInputChange}
 								required
@@ -618,13 +611,12 @@ function PatientsPage() {
 								label="Date of Birth"
 								type="date"
 								fullWidth
-								variant="standard"
 								value={editingPatient.dob || ""}
 								onChange={handleEditInputChange}
 								required
 								InputLabelProps={{ shrink: true }}
 							/>
-							<FormControl fullWidth margin="dense" variant="standard" required>
+							<FormControl fullWidth margin="dense" required>
 								<InputLabel id="edit-patient-gender-label">Gender</InputLabel>
 								<Select
 									labelId="edit-patient-gender-label"
@@ -645,7 +637,6 @@ function PatientsPage() {
 								label="Phone Number"
 								type="tel"
 								fullWidth
-								variant="standard"
 								value={editingPatient.phone || ""}
 								onChange={handleEditInputChange}
 							/>
@@ -655,7 +646,6 @@ function PatientsPage() {
 								label="Email Address"
 								type="email"
 								fullWidth
-								variant="standard"
 								value={editingPatient.email || ""}
 								onChange={handleEditInputChange}
 							/>
@@ -667,7 +657,6 @@ function PatientsPage() {
 								fullWidth
 								multiline
 								rows={2}
-								variant="standard"
 								value={editingPatient.address || ""}
 								onChange={handleEditInputChange}
 							/>
@@ -679,7 +668,6 @@ function PatientsPage() {
 								fullWidth
 								multiline
 								rows={3}
-								variant="standard"
 								value={editingPatient.medical_history || ""}
 								onChange={handleEditInputChange}
 							/>

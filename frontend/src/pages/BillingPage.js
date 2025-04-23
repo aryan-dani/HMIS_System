@@ -581,7 +581,6 @@ function BillingPage() {
 								{...params}
 								label="Select Patient"
 								margin="dense"
-								variant="standard"
 								required
 							/>
 						)}
@@ -593,7 +592,6 @@ function BillingPage() {
 						type="number" // Use number type
 						inputProps={{ step: "0.01" }} // Allow decimals
 						fullWidth
-						variant="standard"
 						value={newBillData.amount}
 						onChange={handleAddInputChange}
 						required
@@ -604,13 +602,12 @@ function BillingPage() {
 						label="Bill Date"
 						type="date"
 						fullWidth
-						variant="standard"
 						value={newBillData.bill_date}
 						onChange={handleAddInputChange}
 						required
 						InputLabelProps={{ shrink: true }}
 					/>
-					<FormControl fullWidth margin="dense" variant="standard" required>
+					<FormControl fullWidth margin="dense" required>
 						<InputLabel id="add-bill-status-label">Status</InputLabel>
 						<Select
 							labelId="add-bill-status-label"
@@ -633,7 +630,6 @@ function BillingPage() {
 						fullWidth
 						multiline
 						rows={3}
-						variant="standard"
 						value={newBillData.description}
 						onChange={handleAddInputChange}
 					/>
@@ -680,7 +676,6 @@ function BillingPage() {
 										{...params}
 										label="Select Patient"
 										margin="dense"
-										variant="standard"
 										required
 									/>
 								)}
@@ -692,7 +687,6 @@ function BillingPage() {
 								type="number"
 								inputProps={{ step: "0.01" }}
 								fullWidth
-								variant="standard"
 								value={editingBill.amount || ""}
 								onChange={handleEditInputChange}
 								required
@@ -703,13 +697,12 @@ function BillingPage() {
 								label="Bill Date"
 								type="date"
 								fullWidth
-								variant="standard"
 								value={editingBill.bill_date || ""}
 								onChange={handleEditInputChange}
 								required
 								InputLabelProps={{ shrink: true }}
 							/>
-							<FormControl fullWidth margin="dense" variant="standard" required>
+							<FormControl fullWidth margin="dense" required>
 								<InputLabel id="edit-bill-status-label">Status</InputLabel>
 								<Select
 									labelId="edit-bill-status-label"
@@ -732,7 +725,6 @@ function BillingPage() {
 								fullWidth
 								multiline
 								rows={3}
-								variant="standard"
 								value={editingBill.description || ""}
 								onChange={handleEditInputChange}
 							/>

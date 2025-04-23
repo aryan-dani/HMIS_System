@@ -439,12 +439,11 @@ function RoomsPage() {
 						label="Room Number"
 						type="text"
 						fullWidth
-						variant="standard"
 						value={newRoomData.room_number}
 						onChange={handleAddInputChange}
 						required
 					/>
-					<FormControl fullWidth margin="dense" variant="standard" required>
+					<FormControl fullWidth margin="dense" required>
 						<InputLabel id="add-room-type-label">Type</InputLabel>
 						<Select
 							labelId="add-room-type-label"
@@ -460,7 +459,7 @@ function RoomsPage() {
 							))}
 						</Select>
 					</FormControl>
-					<FormControl fullWidth margin="dense" variant="standard" required>
+					<FormControl fullWidth margin="dense" required>
 						<InputLabel id="add-room-status-label">Status</InputLabel>
 						<Select
 							labelId="add-room-status-label"
@@ -494,7 +493,9 @@ function RoomsPage() {
 				maxWidth="sm"
 				fullWidth>
 				<DialogTitle>Edit Room Details</DialogTitle>
-				<DialogContent>					<DialogContentText sx={{ my: 2 }}>
+				<DialogContent>
+					{" "}
+					<DialogContentText sx={{ my: 2 }}>
 						Update the room's information.
 					</DialogContentText>
 					{editError && (
@@ -511,12 +512,11 @@ function RoomsPage() {
 								label="Room Number"
 								type="text"
 								fullWidth
-								variant="standard"
 								value={editingRoom.room_number || ""}
 								onChange={handleEditInputChange}
 								required
 							/>
-							<FormControl fullWidth margin="dense" variant="standard" required>
+							<FormControl fullWidth margin="dense" required>
 								<InputLabel id="edit-room-type-label">Type</InputLabel>
 								<Select
 									labelId="edit-room-type-label"
@@ -532,7 +532,7 @@ function RoomsPage() {
 									))}
 								</Select>
 							</FormControl>
-							<FormControl fullWidth margin="dense" variant="standard" required>
+							<FormControl fullWidth margin="dense" required>
 								<InputLabel id="edit-room-status-label">Status</InputLabel>
 								<Select
 									labelId="edit-room-status-label"
@@ -612,7 +612,8 @@ function RoomsPage() {
 					<DialogContentText>
 						Are you sure you want to delete this room record? This action cannot
 						be undone.
-					</DialogContentText>					{deleteError && (
+					</DialogContentText>{" "}
+					{deleteError && (
 						<Alert severity="error" sx={{ my: 2 }}>
 							{deleteError}
 						</Alert>

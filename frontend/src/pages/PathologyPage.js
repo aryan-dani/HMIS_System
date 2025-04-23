@@ -529,7 +529,6 @@ function PathologyPage() {
 								{...params}
 								label="Select Patient"
 								margin="dense"
-								variant="standard"
 								required
 							/>
 						)}
@@ -540,7 +539,6 @@ function PathologyPage() {
 						label="Test Name"
 						type="text"
 						fullWidth
-						variant="standard"
 						value={newReportData.test_name}
 						onChange={handleAddInputChange}
 						required
@@ -551,7 +549,6 @@ function PathologyPage() {
 						label="Report Date"
 						type="date"
 						fullWidth
-						variant="standard"
 						value={newReportData.report_date}
 						onChange={handleAddInputChange}
 						required
@@ -565,7 +562,6 @@ function PathologyPage() {
 						fullWidth
 						multiline
 						rows={4}
-						variant="standard"
 						value={newReportData.results}
 						onChange={handleAddInputChange}
 						required
@@ -578,7 +574,6 @@ function PathologyPage() {
 						fullWidth
 						multiline
 						rows={2}
-						variant="standard"
 						value={newReportData.notes}
 						onChange={handleAddInputChange}
 					/>
@@ -624,7 +619,6 @@ function PathologyPage() {
 										{...params}
 										label="Select Patient"
 										margin="dense"
-										variant="standard"
 										required
 									/>
 								)}
@@ -635,7 +629,6 @@ function PathologyPage() {
 								label="Test Name"
 								type="text"
 								fullWidth
-								variant="standard"
 								value={editingReport.test_name || ""}
 								onChange={handleEditInputChange}
 								required
@@ -646,7 +639,6 @@ function PathologyPage() {
 								label="Report Date"
 								type="date"
 								fullWidth
-								variant="standard"
 								value={editingReport.report_date || ""}
 								onChange={handleEditInputChange}
 								required
@@ -660,7 +652,6 @@ function PathologyPage() {
 								fullWidth
 								multiline
 								rows={4}
-								variant="standard"
 								value={editingReport.results || ""}
 								onChange={handleEditInputChange}
 								required
@@ -673,7 +664,6 @@ function PathologyPage() {
 								fullWidth
 								multiline
 								rows={2}
-								variant="standard"
 								value={editingReport.notes || ""}
 								onChange={handleEditInputChange}
 							/>

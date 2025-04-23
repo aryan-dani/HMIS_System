@@ -11,68 +11,182 @@ import { AuthProvider } from "./context/AuthContext";
 // Define a more refined theme
 const theme = createTheme({
 	palette: {
-		mode: "light", // Keep light mode
+		mode: "light", // Or 'dark'
 		primary: {
-			main: "#1e88e5", // Slightly lighter blue
+			main: "#1976d2", // Standard MUI blue
+			light: "#42a5f5",
+			dark: "#1565c0",
 		},
 		secondary: {
-			main: "#e91e63", // Slightly different pink/magenta
+			main: "#dc004e", // Standard MUI pink
+			light: "#ff4081",
+			dark: "#9a0036",
 		},
 		background: {
-			default: "#f5f5f5", // Slightly darker grey background for more contrast
+			default: "#f4f6f8", // Lighter grey background
 			paper: "#ffffff",
 		},
 		text: {
 			primary: "rgba(0, 0, 0, 0.87)",
 			secondary: "rgba(0, 0, 0, 0.6)",
+			disabled: "rgba(0, 0, 0, 0.38)",
+		},
+		error: {
+			main: "#d32f2f",
+		},
+		warning: {
+			main: "#ed6c02",
+		},
+		info: {
+			main: "#0288d1",
+		},
+		success: {
+			main: "#2e7d32",
 		},
 	},
 	typography: {
 		fontFamily: '"Poppins", "Helvetica", "Arial", sans-serif',
-		h4: {
-			fontWeight: 600, // Make h4 bolder for titles
-		},
-		h5: {
+		h1: { fontWeight: 700, fontSize: "2.5rem" },
+		h2: { fontWeight: 600, fontSize: "2rem" },
+		h3: { fontWeight: 600, fontSize: "1.75rem" },
+		h4: { fontWeight: 600, fontSize: "1.5rem" }, // Title for pages
+		h5: { fontWeight: 500, fontSize: "1.25rem" },
+		h6: { fontWeight: 500, fontSize: "1.1rem" },
+		body1: { fontSize: "1rem" },
+		body2: { fontSize: "0.875rem" },
+		button: {
+			textTransform: "none", // Keep button text case as defined
 			fontWeight: 500,
-		},
-		body1: {
-			fontSize: "1rem",
 		},
 	},
 	shape: {
-		borderRadius: 8, // Add a subtle border radius to components like Card, Paper
+		borderRadius: 8, // Consistent border radius
 	},
 	components: {
-		// Example: Customize Button appearance
-		MuiButton: {
-			styleOverrides: {
-				root: {
-					textTransform: "none", // Prevent uppercase buttons
-					padding: "8px 16px",
-				},
-				containedPrimary: {
-					boxShadow: "0 3px 5px 2px rgba(30, 136, 229, .3)", // Add subtle shadow
-				},
-			},
-		},
-		// Example: Customize Card appearance
-		MuiCard: {
-			styleOverrides: {
-				root: {
-					boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)", // Softer shadow
-				},
-			},
-		},
 		MuiAppBar: {
 			styleOverrides: {
 				root: {
-					boxShadow: "none", // Remove AppBar shadow for a flatter look if desired
-					borderBottom: "1px solid rgba(0, 0, 0, 0.12)", // Add a subtle border instead
+					boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)", // Softer shadow
+					// backgroundColor: '#ffffff', // Optional: White AppBar
+					// color: 'rgba(0, 0, 0, 0.87)', // Optional: Dark text on white AppBar
+				},
+			},
+		},
+		MuiDrawer: {
+			styleOverrides: {
+				paper: {
+					borderRight: "none", // Remove border if AppBar has shadow/border
+					backgroundColor: "#ffffff", // Ensure drawer background is white
+				},
+			},
+		},
+		MuiButton: {
+			styleOverrides: {
+				root: {
+					padding: "8px 20px", // Slightly more padding
+				},
+				containedPrimary: {
+					"&:hover": {
+						boxShadow: "0 2px 8px rgba(25, 118, 210, 0.4)", // Enhance hover shadow
+					},
+				},
+			},
+		},
+		MuiCard: {
+			styleOverrides: {
+				root: {
+					boxShadow: "0 2px 10px rgba(0,0,0,0.08)", // Consistent card shadow
+					transition: "box-shadow 0.3s ease-in-out",
+					"&:hover": {
+						boxShadow: "0 4px 20px rgba(0,0,0,0.12)", // Enhance hover shadow
+					},
+				},
+			},
+		},
+		MuiPaper: {
+			styleOverrides: {
+				root: {
+					// Default paper styles if needed, often covered by Card
+				},
+				elevation1: {
+					boxShadow: "0 1px 3px rgba(0,0,0,0.1)", // Softer default elevation
+				},
+			},
+		},
+		MuiTableCell: {
+			styleOverrides: {
+				head: {
+					fontWeight: 600,
+					backgroundColor: "#f4f6f8", // Light grey header
+					color: "rgba(0, 0, 0, 0.6)",
+				},
+				body: {
+					color: "rgba(0, 0, 0, 0.87)",
+				},
+			},
+		},
+		MuiTableRow: {
+			styleOverrides: {
+				root: {
+					"&:nth-of-type(odd)": {
+						// backgroundColor: '#fafafa', // Optional: Zebra striping
+					},
+					"&:hover": {
+						backgroundColor: "rgba(0, 0, 0, 0.04)", // Subtle hover effect
+					},
+				},
+			},
+		},
+		MuiDialogTitle: {
+			styleOverrides: {
+				root: {
+					fontWeight: 600,
+					padding: "16px 24px",
+				},
+			},
+		},
+		MuiDialogContent: {
+			styleOverrides: {
+				root: {
+					padding: "20px 24px",
+				},
+			},
+		},
+		MuiDialogActions: {
+			styleOverrides: {
+				root: {
+					padding: "16px 24px",
+				},
+			},
+		},
+		MuiTextField: {
+			defaultProps: {
+				variant: "outlined", // Default to outlined variant
+				margin: "dense",
+			},
+		},
+		MuiFormControl: {
+			defaultProps: {
+				variant: "outlined", // Default to outlined variant
+				margin: "dense",
+			},
+		},
+		MuiSelect: {
+			defaultProps: {
+				variant: "outlined", // Default to outlined variant
+				margin: "dense",
+			},
+		},
+		MuiAutocomplete: {
+			styleOverrides: {
+				inputRoot: {
+					// Ensure Autocomplete padding matches TextField
+					paddingTop: "9px !important", // Adjust if needed based on TextField variant
+					paddingBottom: "9px !important",
 				},
 			},
 		},
 	},
-	// You can add more theme customizations here (spacing, component overrides, etc.)
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -80,7 +194,7 @@ root.render(
 	// Wrap everything with ThemeProvider AND AuthProvider
 	<ThemeProvider theme={theme}>
 		<AuthProvider>
-			<CssBaseline />
+			<CssBaseline /> {/* Apply baseline styles and background color */}
 			<App />
 		</AuthProvider>
 	</ThemeProvider>
